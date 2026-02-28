@@ -1,0 +1,32 @@
+name: Build KrkrDump (Windows)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.3.1
+
+    - name: Build Release x64
+      run: msbuild KrkrDump.sln `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            /m
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: KrkrDump-Release
+        path: |
+          **/Release/*.exe
+          **/Release/*.dll
